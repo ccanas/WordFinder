@@ -77,5 +77,30 @@ namespace WordFinder.Tests.Features
             var result = _validator.TestValidate(request);
             result.ShouldNotHaveAnyValidationErrors();
         }
+
+        [Fact]
+        public void Should_Fail_When_Matrix_Has_More_Than_64_Rows()
+        {
+            var matrix = Enumerable.Repeat("abcd", 65);
+            var request = new GetFoundWordsRequest(matrix, new[] { "a" });
+
+            var result = _validator.TestValidate(request);
+
+            result.ShouldHaveValidationErrorFor(x => x.Matrix)
+                .WithErrorMessage("Matrix must not contain more than 64 rows.");
+        }
+
+        [Fact]
+        public void Should_Fail_When_Matrix_Has_Row_With_More_Than_64_Columns()
+        {
+            var row = new string('a', 65);
+            var matrix = Enumerable.Repeat(row, 4);
+            var request = new GetFoundWordsRequest(matrix, new[] { "a" });
+
+            var result = _validator.TestValidate(request);
+
+            result.ShouldHaveValidationErrorFor(x => x.Matrix)
+                .WithErrorMessage("Matrix rows must not contain more than 64 columns.");
+        }
     }
 }
