@@ -1,6 +1,20 @@
-@WordFinder_HostAddress = http://localhost:5177
+@WordFinder_HostAddress = https://localhost:5001
 
-GET {{WordFinder_HostAddress}}/weatherforecast/
+POST {{WordFinder_HostAddress}}/api/WordFinder
 Accept: application/json
-
-###
+Content-Type: application/json
+{
+  "matrix": [
+    "abcdc",
+    "fgwio",
+    "chill",
+    "ponsd",
+    "ptnsd",
+    "sadxy"
+  ],
+  "wordstream": [
+    "chill",
+    "hot",
+    "wind"
+  ]
+}
