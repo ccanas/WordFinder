@@ -17,6 +17,7 @@ namespace WordFinder.Features
 
     public class GetFoundWordsRequestValidator : AbstractValidator<GetFoundWordsRequest>
     {
+        private const int MaxMatrixSize = 64;
         public GetFoundWordsRequestValidator()
         {
             RuleFor(x => x.Matrix)
@@ -24,7 +25,9 @@ namespace WordFinder.Features
                 .NotNull().WithMessage("Matrix must not be null.")
                 .NotEmpty().WithMessage("Matrix must contain at least one row.")
                 .Must(HaveUniformRowLengths).WithMessage("All matrix rows must have the same length.")
-                .Must(m => m.All(row => !string.IsNullOrWhiteSpace(row))).WithMessage("Matrix rows must not be empty or whitespace.");
+                .Must(m => m.All(row => !string.IsNullOrWhiteSpace(row))).WithMessage("Matrix rows must not be empty or whitespace.")
+                .Must(m => m.Count() <= MaxMatrixSize).WithMessage($"Matrix must not contain more than {MaxMatrixSize} rows.")
+                .Must(m => m.First().Length <= MaxMatrixSize).WithMessage($"Matrix rows must not contain more than {MaxMatrixSize} columns.");
 
             RuleFor(x => x.WordStream)
                 .Cascade(CascadeMode.Stop)

@@ -32,11 +32,21 @@
             if (wordstream == null)
                 throw new ArgumentNullException(nameof(wordstream));
 
-            var uniqueWords = new HashSet<string>(wordstream.Where(w => !string.IsNullOrEmpty(w)));
+            var frequencies = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            foreach (var word in wordstream.Where(w => !string.IsNullOrEmpty(w)))
+            {
+                if (frequencies.ContainsKey(word))
+                    frequencies[word]++;
+                else
+                    frequencies[word] = 1;
+            }
+
             var foundWords = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var word in uniqueWords)
+            foreach (var kvp in frequencies)
             {
+                var word = kvp.Key;
+
                 if (word.Length > _maxCols && word.Length > _maxRows)
                     continue;
 
@@ -45,8 +55,7 @@
 
                 if (found)
                 {
-                    int count = wordstream.Count(w => string.Equals(w, word, StringComparison.OrdinalIgnoreCase));
-                    foundWords[word] = count;
+                    foundWords[word] = kvp.Value;
                 }
             }
 
@@ -73,6 +82,5 @@
 
             return columns;
         }
-
     }
 }
